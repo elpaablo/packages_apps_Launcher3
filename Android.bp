@@ -319,6 +319,7 @@ android_app {
     static_libs: ["Launcher3CommonDepsLib"],
 
     srcs: [
+        "src_base/**/*.java",
         "src/**/*.java",
         "src_ui_overrides/**/*.java",
         "go/src/**/*.java",
