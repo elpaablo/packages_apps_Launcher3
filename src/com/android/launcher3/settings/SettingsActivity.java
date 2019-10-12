@@ -52,6 +52,7 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -337,6 +338,12 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
                 }
             }
             updateIsGoogleAppEnabled();
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            LauncherAppState.getInstanceNoCreate().checkIfRestartNeeded();
         }
 
         private PreferenceHighlighter createHighlighter() {
