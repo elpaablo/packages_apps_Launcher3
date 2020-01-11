@@ -87,6 +87,7 @@
     <string name="model_delegate_class" translatable="false"></string>
     <string name="window_manager_proxy_class" translatable="false"></string>
     <string name="secondary_display_predictions_class" translatable="false"></string>
+    <string name="drawable_factory_class" translatable="false">com.android.launcher3.icons.ThirdPartyDrawableFactory</string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -208,4 +209,7 @@
 
     <string name="floating_task_package" translatable="false"></string>
     <string name="floating_task_action" translatable="false"></string>
+
+    <!-- Icon pack -->
+    <string name="icon_pack_settings_class" translatable="false">com.android.launcher3.icons.pack.IconPackSettingsFragment</string>
 </resources>
