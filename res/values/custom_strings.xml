@@ -31,4 +31,8 @@
     <!-- Suggestions -->
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="suggestion_pref_screen_desc">For All Apps &amp; Home screen suggestions</string>
+
+     <!-- DT2S -->
+    <string name="pref_sleep_gesture_title">Double tap to sleep</string>
+    <string name="pref_sleep_gesture_summary">Double tap on empty space for power-off</string>
 </resources>
