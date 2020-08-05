@@ -18,6 +18,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        android:key="pref_icon_pack"
+        android:title="@string/icon_pack_title" />
+
     <!--Homescreen-->
     <Preference android:key="category_homescreen"
         android:title="@string/category_homescreen_title"

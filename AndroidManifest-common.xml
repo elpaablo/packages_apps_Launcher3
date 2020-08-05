@@ -199,5 +199,14 @@
             android:theme="@android:style/Theme.DeviceDefault.Settings"
             android:permission="android.permission.MANAGE_APP_LOCK"
             android:autoRemoveFromRecents="true" />
+
+        <!-- Icons -->
+        <activity
+            android:name="com.android.launcher3.lineage.icon.IconPackSettingsActivity"
+            android:label="@string/icon_pack_title"
+            android:theme="@style/HomeSettings.Theme"
+            android:exported="true"
+            android:autoRemoveFromRecents="true"  />
+
     </application>
 </manifest>

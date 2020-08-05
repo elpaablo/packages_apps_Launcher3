@@ -51,6 +51,8 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.lineage.icon.IconPackSettingsActivity;
+import com.android.launcher3.lineage.icon.IconPackStore;
 import com.android.launcher3.lineage.LineageUtils;
 import com.android.launcher3.lineage.trust.TrustAppsActivity;
 import com.android.launcher3.LauncherAppState;
@@ -92,6 +94,7 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
     private static final String KEY_MINUS_ONE = "pref_enable_minus_one";
     private static final String SEARCH_PACKAGE = "com.google.android.googlequicksearchbox";
     public static final String KEY_TRUST_APPS = "pref_trust_apps";
+    private static final String KEY_ICON_PACK = "pref_icon_pack";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +202,8 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
     /**
      * This fragment shows the launcher preferences.
      */
-    public static class LauncherSettingsFragment extends PreferenceFragmentCompat {
+    public static class LauncherSettingsFragment extends PreferenceFragmentCompat implements
+            SharedPreferences.OnSharedPreferenceChangeListener {
 
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
@@ -223,25 +227,15 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             setPreferencesFromResource(R.xml.launcher_preferences, rootKey);
+            updatePreferences();
+        }
 
-            PreferenceScreen screen = getPreferenceScreen();
-            for (int i = screen.getPreferenceCount() - 1; i >= 0; i--) {
-                Preference preference = screen.getPreference(i);
-                if (!initPreference(preference)) {
-                    screen.removePreference(preference);
-                }
-            }
-
-            if (getActivity() != null && !TextUtils.isEmpty(getPreferenceScreen().getTitle())) {
-                if (getPreferenceScreen().getTitle().equals(
-                        getResources().getString(R.string.search_pref_screen_title))){
-                    DeviceProfile mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(
-                            getContext()).getDeviceProfile(getContext());
-                    getPreferenceScreen().setTitle(mDeviceProfile.isTablet ?
-                            R.string.search_pref_screen_title_tablet
-                            : R.string.search_pref_screen_title);
-                }
-                getActivity().setTitle(getPreferenceScreen().getTitle());
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            switch (key) {
+                case IconPackStore.KEY_ICON_PACK:
+                    updatePreferences();
+                    break;
             }
         }
 
@@ -320,9 +314,34 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
                     mShowSuggestionsPref = preference;
                     updateSuggestionsAvailability();
                     return true;
+                case KEY_ICON_PACK:
+                    setupIconPackPreference(preference);
+                    return true;
             }
 
             return true;
+        }
+
+        private void updatePreferences() {
+            PreferenceScreen screen = getPreferenceScreen();
+            for (int i = screen.getPreferenceCount() - 1; i >= 0; i--) {
+                Preference preference = screen.getPreference(i);
+                if (!initPreference(preference)) {
+                    screen.removePreference(preference);
+                }
+            }
+
+            if (getActivity() != null && !TextUtils.isEmpty(getPreferenceScreen().getTitle())) {
+                if (getPreferenceScreen().getTitle().equals(
+                        getResources().getString(R.string.search_pref_screen_title))){
+                    DeviceProfile mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(
+                            getContext()).getDeviceProfile(getContext());
+                    getPreferenceScreen().setTitle(mDeviceProfile.isTablet ?
+                            R.string.search_pref_screen_title_tablet
+                            : R.string.search_pref_screen_title);
+                }
+                getActivity().setTitle(getPreferenceScreen().getTitle());
+            }
         }
 
         /**
@@ -356,6 +375,17 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
             if (mShowSuggestionsPref != null) {
                 mShowSuggestionsPref.setEnabled(Utilities.isSuggestionsAppEnabled(getContext()));
             }
+        }
+
+        private void setupIconPackPreference(Preference preference) {
+            final Context context = getContext();
+            final String defaultLabel = context.getString(R.string.icon_pack_default_label);
+            final String pkgLabel = new IconPackStore(context).getCurrentLabel(defaultLabel);
+            preference.setSummary(pkgLabel);
+            preference.setOnPreferenceClickListener(p -> {
+                startActivity(new Intent(getActivity(), IconPackSettingsActivity.class));
+                return true;
+            });
         }
 
         @Override
