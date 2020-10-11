@@ -20,6 +20,9 @@ import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTIO
 
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
+import static com.android.launcher3.OverlayCallbackImpl.KEY_ENABLE_MINUS_ONE;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ import androidx.preference.PreferenceGroup.PreferencePositionCallback;
 import androidx.preference.PreferenceScreen;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.internal.util.flamingo.FlamingoUtils;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
@@ -189,6 +193,10 @@ public class SettingsActivity extends FragmentActivity
         private boolean mPreferenceHighlighted = false;
         private Preference mDeveloperOptionPref;
 
+        protected static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
+
+        private Preference mShowGoogleAppPref;
+
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             final Bundle args = getArguments();
@@ -278,6 +286,11 @@ public class SettingsActivity extends FragmentActivity
                 case DEVELOPER_OPTIONS_KEY:
                     mDeveloperOptionPref = preference;
                     return updateDeveloperOption();
+
+                case KEY_ENABLE_MINUS_ONE:
+                    mShowGoogleAppPref = preference;
+                    updateIsGoogleAppEnabled();
+                    return true;
             }
 
             return true;
@@ -301,6 +314,16 @@ public class SettingsActivity extends FragmentActivity
             return showPreference;
         }
 
+        public static boolean isGSAEnabled(Context context) {
+            return FlamingoUtils.isPackageInstalled(context, GSA_PACKAGE, false /** ignoreState*/);
+        }
+
+        private void updateIsGoogleAppEnabled() {
+            if (mShowGoogleAppPref != null) {
+                mShowGoogleAppPref.setEnabled(isGSAEnabled(getContext()));
+            }
+        }
+
         @Override
         public void onResume() {
             super.onResume();
@@ -316,6 +339,7 @@ public class SettingsActivity extends FragmentActivity
                     requestAccessibilityFocus(getListView());
                 }
             }
+            updateIsGoogleAppEnabled();
         }
 
         private PreferenceHighlighter createHighlighter() {
