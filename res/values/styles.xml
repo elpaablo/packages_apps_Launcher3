@@ -190,14 +190,7 @@
         <item name="qsbIconTintTertiary">@color/qsb_tertiary</item>
     </style>
 
-    <style name="HomeSettings.Theme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/HomeSettings.PreferenceTheme</item>
-    </style>
-
-    <style name="HomeSettings.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+    <style name="HomeSettings.Theme" parent="@style/Theme.SubSettingsBase">
         <item name="preferenceFragmentCompatStyle">@style/HomeSettings.FragmentCompatStyle</item>
     </style>
 
@@ -258,7 +251,9 @@
         <item name="disabledIconAlpha">.54</item>
     </style>
 
-    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
+    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+    </style>
 
     <style name="BaseIconUnBounded" parent="BaseIconRoot">
         <item name="android:layout_width">match_parent</item>
