@@ -64,4 +64,9 @@
     <string name="category_gestures_title">Gestures</string>
     <string name="category_dev_title">Misc</string>
 
+    <!-- Hotseat searchbar -->
+    <string name="label_search">Search</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Voice search</string>
+
 </resources>
