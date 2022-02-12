@@ -157,8 +157,9 @@ public final class Utilities {
     public static final String KEY_DOCK_THEME = "pref_dock_theme";
     public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
     public static final String SUGGESTIONS_PACKAGE = "com.google.android.as";
+    public static final String LENS_ACTIVITY = "com.google.android.apps.lens.MainActivity";
     public static final String LENS_SHARE_ACTIVITY = "com.google.android.apps.search.lens.LensShareEntryPointActivity";
-    public static final String LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity";
+    public static final String LENS_URI = "google://lens";
 
     /**
      * Returns true if theme is dark.
