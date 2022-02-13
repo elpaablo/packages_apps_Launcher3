@@ -158,6 +158,7 @@ public final class Utilities {
     public static final String KEY_SUGGESTIONS = "pref_suggestions";
 
     public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
+    public static final String GSA_ACTIVITY = "com.google.android.googlequicksearchbox.MainInfoGatewayInternal";
     public static final String SUGGESTIONS_PACKAGE = "com.google.android.as";
     public static final String LENS_ACTIVITY = "com.google.android.apps.lens.MainActivity";
     public static final String LENS_SHARE_ACTIVITY = "com.google.android.apps.search.lens.LensShareEntryPointActivity";

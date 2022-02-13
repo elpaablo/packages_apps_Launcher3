@@ -40,6 +40,7 @@ public class QsbLayout extends FrameLayout {
         assistantIcon = findViewById(R.id.mic_icon);
         gIcon = findViewById(R.id.g_icon);
         lensIcon = findViewById(R.id.lens_icon);
+        setUpMainSearch();
 
         if (Utilities.isThemedIconsEnabled(mContext)) {
             assistantIcon.setImageResource(R.drawable.ic_mic_themed);
@@ -50,15 +51,8 @@ public class QsbLayout extends FrameLayout {
             gIcon.setImageResource(R.drawable.ic_super_g_color);
             lensIcon.setImageResource(R.drawable.ic_lens_color);
         }
-
-        String searchPackage = QsbContainerView.getSearchWidgetPackageName(mContext);
-        setOnClickListener(view -> {
-            mContext.startActivity(new Intent("android.search.action.GLOBAL_SEARCH").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK).setPackage(searchPackage));
-        });
-        if (Utilities.isGSAEnabled(mContext)) {
-            setupLensIcon();
-        }
+        setupGIcon();
+        setupLensIcon();
     }
 
     @Override
@@ -78,6 +72,22 @@ public class QsbLayout extends FrameLayout {
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
             }
         }
+    }
+
+    private void setUpMainSearch() {
+        String searchPackage = QsbContainerView.getSearchWidgetPackageName(mContext);
+        setOnClickListener(view -> {
+            mContext.startActivity(new Intent("android.search.action.GLOBAL_SEARCH").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK).setPackage(searchPackage));
+        });
+    }
+
+    private void setupGIcon() {
+        gIcon.setOnClickListener(view -> {
+            mContext.startActivity(new Intent("android.intent.action.MAIN")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    .setComponent(new ComponentName(Utilities.GSA_PACKAGE, Utilities.GSA_ACTIVITY)));
+        });
     }
 
     private void setupLensIcon() {
