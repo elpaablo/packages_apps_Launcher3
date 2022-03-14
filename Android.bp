@@ -314,6 +314,7 @@ android_library {
         "Launcher3CommonDepsLib",
         "QuickstepResLib",
         "SystemUIAnimationLib",
+        "vendor_support",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
