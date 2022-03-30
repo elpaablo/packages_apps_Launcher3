@@ -60,4 +60,8 @@
     <string name="pref_restart_title">Restart</string>
     <string name="pref_restart_summary">Restart the launcher</string>
 
+    <!-- All apps themed icons -->
+    <string name="pref_themed_icons_title">All apps themed icons</string>
+    <string name="pref_themed_icons_summary">Toggle to switch between homescreen dock and all apps themed icons</string>
+
 </resources>
