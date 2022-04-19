@@ -97,4 +97,9 @@
         android:defaultValue="true"
         android:persistent="true" />
 
+    <com.android.launcher3.settings.RestartPreference
+        android:key="pref_restart"
+        android:title="@string/pref_restart_title"
+        android:summary="@string/pref_restart_summary" />
+
 </androidx.preference.PreferenceScreen>
