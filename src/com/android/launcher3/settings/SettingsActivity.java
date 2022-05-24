@@ -81,6 +81,7 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
     public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
     public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
+    public static final String KEY_SUGGESTIONS = "pref_suggestions";
 
     @VisibleForTesting
     static final String EXTRA_FRAGMENT = ":settings:fragment";
@@ -200,6 +201,7 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
 
         private Preference mShowGoogleAppPref;
         private Preference mShowGoogleBarPref;
+        private Preference mShowSuggestionsPref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -299,6 +301,10 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
                     mShowGoogleBarPref = preference;
                     updateIsGoogleAppEnabled();
                     return true;
+                case KEY_SUGGESTIONS:
+                    mShowSuggestionsPref = preference;
+                    updateSuggestionsAvailability();
+                    return true;
             }
 
             return true;
@@ -328,6 +334,13 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
             }
             if (mShowGoogleBarPref != null) {
                 mShowGoogleBarPref.setEnabled(Utilities.isGSAEnabled(getContext()));
+            }
+
+        }
+
+        private void updateSuggestionsAvailability() {
+            if (mShowSuggestionsPref != null) {
+                mShowSuggestionsPref.setEnabled(Utilities.isSuggestionsAppEnabled(getContext()));
             }
         }
 
