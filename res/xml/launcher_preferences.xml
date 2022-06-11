@@ -18,6 +18,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <!--Homescreen-->
+    <Preference android:key="category_homescreen"
+        android:title="@string/category_homescreen_title"
+        style="@style/PreferenceCategoryLabelStyle"/>
+
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_workspace_lock"
@@ -45,18 +50,17 @@
         launcher:logIdOn="613"
         launcher:logIdOff="614" />
 
+
+    <SwitchPreference
+        android:key="pref_desktop_show_labels"
+        android:title="@string/desktop_show_labels"
+        android:defaultValue="true"
+        android:persistent="true" />
+
     <!--
       LAUNCHER_HOME_SCREEN_ROTATION_ENABLED(615)
       LAUNCHER_HOME_SCREEN_ROTATION_DISABLED(616)
     -->
-
-    <SwitchPreference
-        android:key="pref_allapps_themed_icons"
-        android:title="@string/pref_themed_icons_title"
-        android:summary="@string/pref_themed_icons_summary"
-        android:defaultValue="false"
-        android:persistent="true" />
-
     <SwitchPreference
         android:key="pref_allowRotation"
         android:title="@string/allow_rotation_title"
@@ -65,6 +69,29 @@
         android:persistent="true"
         launcher:logIdOn="615"
         launcher:logIdOff="616" />
+
+    <!--App drawer-->
+    <Preference android:key="category_app_drawer"
+        android:title="@string/category_app_drawer_title"
+        style="@style/PreferenceCategoryLabelStyle"/>
+
+    <SwitchPreference
+        android:key="pref_drawer_show_labels"
+        android:title="@string/drawer_show_labels"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_allapps_themed_icons"
+        android:title="@string/pref_themed_icons_title"
+        android:summary="@string/pref_themed_icons_summary"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <!--Google-->
+    <Preference android:key="category_google"
+        android:title="@string/category_google_title"
+        style="@style/PreferenceCategoryLabelStyle"/>
 
     <SwitchPreference
         android:defaultValue="true"
@@ -86,6 +113,11 @@
         android:summary="@string/dock_search_summary"
         android:defaultValue="true" />
 
+    <!--Gestures-->
+    <Preference android:key="category_gestures"
+        android:title="@string/category_gestures_title"
+        style="@style/PreferenceCategoryLabelStyle"/>
+
     <SwitchPreference
         android:key="pref_sleep_gesture"
         android:title="@string/pref_sleep_gesture_title"
@@ -93,23 +125,16 @@
         android:defaultValue="true"
         android:persistent="true"/>
 
+    <!--Dev options-->
+    <Preference android:key="category_dev"
+        android:title="@string/category_dev_title"
+        style="@style/PreferenceCategoryLabelStyle"/>
+
     <Preference
         android:key="pref_developer_options"
         android:persistent="false"
         android:title="@string/developer_options_title"
         android:fragment="com.android.launcher3.settings.DeveloperOptionsFragment"/>
-
-    <SwitchPreference
-        android:key="pref_desktop_show_labels"
-        android:title="@string/desktop_show_labels"
-        android:defaultValue="true"
-        android:persistent="true" />
-
-    <SwitchPreference
-        android:key="pref_drawer_show_labels"
-        android:title="@string/drawer_show_labels"
-        android:defaultValue="true"
-        android:persistent="true" />
 
     <com.android.launcher3.settings.RestartPreference
         android:key="pref_restart"
