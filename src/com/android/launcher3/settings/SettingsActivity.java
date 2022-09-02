@@ -45,7 +45,7 @@ import androidx.preference.PreferenceGroup.PreferencePositionCallback;
 import androidx.preference.PreferenceScreen;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.internal.util.flamingo.FlamingoUtils;
+import com.android.internal.util.xd.xdUtils;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
@@ -312,7 +312,7 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
         }
 
         public static boolean isGSAEnabled(Context context) {
-            return FlamingoUtils.isPackageInstalled(context, GSA_PACKAGE, false /** ignoreState*/);
+            return xdUtils.isPackageInstalled(context, GSA_PACKAGE, false /** ignoreState*/);
         }
 
         private void updateIsGoogleAppEnabled() {
