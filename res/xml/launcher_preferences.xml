@@ -107,12 +107,6 @@
         <intent android:action="android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS" />
     </Preference>
 
-    <SwitchPreference
-        android:key="pref_dock_search"
-        android:title="@string/dock_search_title"
-        android:summary="@string/dock_search_summary"
-        android:defaultValue="true" />
-
     <!--Gestures-->
     <Preference android:key="category_gestures"
         android:title="@string/category_gestures_title"

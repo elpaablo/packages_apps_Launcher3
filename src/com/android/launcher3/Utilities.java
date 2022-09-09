@@ -153,7 +153,6 @@ public final class Utilities {
     public static final boolean IS_DEBUG_DEVICE =
             Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
 
-    public static final String KEY_DOCK_SEARCH = "pref_dock_search";
     public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
     public static final String SUGGESTIONS_PACKAGE = "com.google.android.as";
     public static final String LENS_SHARE_ACTIVITY = "com.google.android.apps.search.lens.LensShareEntryPointActivity";
@@ -969,14 +968,5 @@ public final class Utilities {
     public static boolean isWorkspaceEditAllowed(Context context) {
         SharedPreferences prefs = getPrefs(context.getApplicationContext());
         return !prefs.getBoolean(InvariantDeviceProfile.KEY_WORKSPACE_LOCK, false);
-    }
-
-    public static boolean showQSB(Context context) {
-        return isGSAEnabled(context) && isQSBEnabled(context);
-    }
-
-    private static boolean isQSBEnabled(Context context) {
-        SharedPreferences prefs = getPrefs(context.getApplicationContext());
-        return prefs.getBoolean(KEY_DOCK_SEARCH, true);
     }
 }
