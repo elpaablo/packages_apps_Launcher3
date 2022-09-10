@@ -81,7 +81,6 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
     public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
     public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
-    public static final String KEY_SUGGESTIONS = "pref_suggestions";
 
     @VisibleForTesting
     static final String EXTRA_FRAGMENT = ":settings:fragment";
@@ -301,7 +300,7 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
                 case Utilities.KEY_DOCK_SEARCH:
                     mShowGoogleBarPref = preference;
                     updateIsGoogleAppEnabled();
-                case KEY_SUGGESTIONS:
+                case Utilities.KEY_SUGGESTIONS:
                     mShowSuggestionsPref = preference;
                     updateSuggestionsAvailability();
                     return true;
