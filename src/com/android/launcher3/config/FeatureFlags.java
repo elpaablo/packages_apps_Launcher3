@@ -40,7 +40,7 @@ public final class FeatureFlags {
     private FeatureFlags() { }
 
     public static boolean showFlagTogglerUi(Context context) {
-        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
+        return Utilities.isDevelopersOptionsEnabled(context);
     }
 
     /**
@@ -52,7 +52,7 @@ public final class FeatureFlags {
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
      * and should be modified at a project level.
      */
-    public static final boolean QSB_ON_FIRST_SCREEN = BuildConfig.QSB_ON_FIRST_SCREEN;
+    public static final boolean QSB_ON_FIRST_SCREEN = false;
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
@@ -189,7 +189,7 @@ public final class FeatureFlags {
 
     // TODO: b/172467144 Remove ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE feature flag.
     public static final BooleanFlag ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE = new DeviceFlag(
-            "ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE", false, "Enables a "
+            "ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE", true, "Enables a "
             + "crossfade animation when the system these changes.");
 
     // TODO: b/174174514 Remove ENABLE_APP_PREDICTIONS_WHILE_VISIBLE feature flag.
@@ -366,8 +366,6 @@ public final class FeatureFlags {
     }
 
     private static BooleanFlag getDebugFlag(String key, boolean defaultValue, String description) {
-        return Utilities.IS_DEBUG_DEVICE
-                ? new DebugFlag(key, defaultValue, description)
-                : new BooleanFlag(key, defaultValue);
+        return new DebugFlag(key, defaultValue, description);
     }
 }

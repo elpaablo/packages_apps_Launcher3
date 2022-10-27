@@ -1345,14 +1345,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         vibrateForScroll();
     }
 
-    private void vibrateForScroll() {
-        long now = SystemClock.uptimeMillis();
-        if (now - mScrollLastHapticTimestamp > mScrollHapticMinGapMillis) {
-            mScrollLastHapticTimestamp = now;
-            VibratorWrapper.INSTANCE.get(mContext).vibrate(SCROLL_VIBRATION_PRIMITIVE,
-                    SCROLL_VIBRATION_PRIMITIVE_SCALE, SCROLL_VIBRATION_FALLBACK);
-        }
-    }
+    private void vibrateForScroll() {}
 
     @Override
     protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
@@ -3495,6 +3488,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActivity.getStatsLogManager().logger().log(LAUNCHER_TASK_CLEAR_ALL);
     }
 
+    public void dismissAllTasks() {
+        dismissAllTasks(null);
+    }
+
     private void dismissCurrentTask() {
         TaskView taskView = getNextPageTaskView();
         if (taskView != null) {
@@ -4065,7 +4062,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), firstTaskEndingBounds,
                 secondTaskEndingBounds);
-
+        if (mFirstFloatingTaskView == null) return false;
         mFirstFloatingTaskView.getBoundsOnScreen(firstTaskStartingBounds);
         mFirstFloatingTaskView.addAnimation(pendingAnimation,
                 new RectF(firstTaskStartingBounds), firstTaskEndingBounds,
@@ -4153,8 +4150,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mSplitPlaceholderInset, mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
         mTempRectF.set(mTempRect);
-        mFirstFloatingTaskView.updateOrientationHandler(mOrientationHandler);
-        mFirstFloatingTaskView.update(mTempRectF, /*progress=*/1f);
+	if (mFirstFloatingTaskView != null) {
+        	mFirstFloatingTaskView.updateOrientationHandler(mOrientationHandler);
+        	mFirstFloatingTaskView.update(mTempRectF, /*progress=*/1f);
+	}
 
         PagedOrientationHandler orientationHandler = getPagedOrientationHandler();
         Pair<FloatProperty, FloatProperty> taskViewsFloat =

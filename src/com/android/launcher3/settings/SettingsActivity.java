@@ -20,6 +20,9 @@ import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTIO
 
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
+import static com.android.launcher3.OverlayCallbackImpl.KEY_ENABLE_MINUS_ONE;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -50,9 +53,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.lineage.LineageUtils;
 import com.android.launcher3.lineage.trust.TrustAppsActivity;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+
+import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,14 +66,13 @@ import java.util.List;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends FragmentActivity
+public class SettingsActivity extends CollapsingToolbarBaseActivity
         implements OnPreferenceStartFragmentCallback, OnPreferenceStartScreenCallback,
         SharedPreferences.OnSharedPreferenceChangeListener{
 
     /** List of fragments that can be hosted by this activity. */
-    private static final List<String> VALID_PREFERENCE_FRAGMENTS =
-            !Utilities.IS_DEBUG_DEVICE ? Collections.emptyList()
-                    : Collections.singletonList(DeveloperOptionsFragment.class.getName());
+    private static final List<String> VALID_PREFERENCE_FRAGMENTS = Collections.singletonList(
+            DeveloperOptionsFragment.class.getName());
 
     private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
@@ -92,13 +97,9 @@ public class SettingsActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
-        setActionBar(findViewById(R.id.action_bar));
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_FRAGMENT) || intent.hasExtra(EXTRA_FRAGMENT_ARGS)) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         if (savedInstanceState == null) {
             Bundle args = intent.getBundleExtra(EXTRA_FRAGMENT_ARGS);
@@ -116,7 +117,7 @@ public class SettingsActivity extends FragmentActivity
                     getPreferenceFragment());
             f.setArguments(args);
             // Display the fragment as the main content.
-            fm.beginTransaction().replace(R.id.content_frame, f).commit();
+            fm.beginTransaction().replace(com.android.settingslib.collapsingtoolbar.R.id.content_frame, f).commit();
         }
         Utilities.getPrefs(getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
     }
@@ -143,7 +144,16 @@ public class SettingsActivity extends FragmentActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) { }
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case Utilities.KEY_DOCK_SEARCH:
+            case Utilities.KEY_DOCK_THEME:
+                LauncherAppState.getInstanceNoCreate().setNeedsRestart();
+                break;
+            default:
+                break;
+        }
+    }
 
     private boolean startPreference(String fragment, Bundle args, String key) {
         if (Utilities.ATLEAST_P && getSupportFragmentManager().isStateSaved()) {
@@ -194,6 +204,10 @@ public class SettingsActivity extends FragmentActivity
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
         private Preference mDeveloperOptionPref;
+
+        private Preference mShowGoogleAppPref;
+        private Preference mShowSuggestionsPref;
+        private Preference mShowGoogleBarPref;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -298,6 +312,14 @@ public class SettingsActivity extends FragmentActivity
                         return true;
                     });
                     return true;
+                case Utilities.KEY_DOCK_SEARCH:
+                    mShowGoogleBarPref = preference;
+                    updateIsGoogleAppEnabled();
+                    return true;
+                case Utilities.KEY_SUGGESTIONS:
+                    mShowSuggestionsPref = preference;
+                    updateSuggestionsAvailability();
+                    return true;
             }
 
             return true;
@@ -321,6 +343,21 @@ public class SettingsActivity extends FragmentActivity
             return showPreference;
         }
 
+        private void updateIsGoogleAppEnabled() {
+            if (mShowGoogleAppPref != null) {
+                mShowGoogleAppPref.setEnabled(Utilities.isGSAEnabled(getContext()));
+            }
+            if (mShowGoogleBarPref != null) {
+                mShowGoogleBarPref.setEnabled(Utilities.isGSAEnabled(getContext()));
+            }
+        }
+
+        private void updateSuggestionsAvailability() {
+            if (mShowSuggestionsPref != null) {
+                mShowSuggestionsPref.setEnabled(Utilities.isSuggestionsAppEnabled(getContext()));
+            }
+        }
+
         @Override
         public void onResume() {
             super.onResume();
@@ -336,6 +373,14 @@ public class SettingsActivity extends FragmentActivity
                     requestAccessibilityFocus(getListView());
                 }
             }
+            updateIsGoogleAppEnabled();
+            updateSuggestionsAvailability();
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            LauncherAppState.getInstanceNoCreate().checkIfRestartNeeded();
         }
 
         private PreferenceHighlighter createHighlighter() {

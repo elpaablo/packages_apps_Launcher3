@@ -70,6 +70,8 @@ public class LauncherAppState implements SafeCloseable {
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
+    private boolean mNeedsRestart;
+
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
     }
@@ -137,6 +139,7 @@ public class LauncherAppState implements SafeCloseable {
         onNotificationSettingsChanged(settingsCache.getValue(NOTIFICATION_BADGING_URI));
         mOnTerminateCallback.add(() ->
                 settingsCache.unregister(NOTIFICATION_BADGING_URI, notificationLister));
+
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
@@ -155,6 +158,18 @@ public class LauncherAppState implements SafeCloseable {
         if (areNotificationDotsEnabled) {
             NotificationListener.requestRebind(new ComponentName(
                     mContext, NotificationListener.class));
+        }
+    }
+
+    public void setNeedsRestart() {
+        mNeedsRestart = true;
+    }
+
+    public void checkIfRestartNeeded() {
+        // we destroyed Settings activity with the back button
+        // so we force a restart now if needed without waiting for home button press
+        if (mNeedsRestart) {
+            Utilities.restart(mContext);
         }
     }
 

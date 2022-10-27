@@ -31,6 +31,8 @@
     with some minor changed based on the derivative app.
     -->
 
+    <uses-sdk android:minSdkVersion="29"/>
+
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
@@ -40,10 +42,17 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SUSPEND_APPS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <!-- for rotating surface by arbitrary degree -->
     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="lineageos.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_APP_LOCK" />
 
     <!--
     Permissions required for read/write access to the workspace data. These permission name
@@ -188,6 +197,7 @@
             android:name="com.android.launcher3.lineage.trust.TrustAppsActivity"
             android:label="@string/trust_apps_manager_name"
             android:theme="@android:style/Theme.DeviceDefault.Settings"
+            android:permission="android.permission.MANAGE_APP_LOCK"
             android:autoRemoveFromRecents="true" />
     </application>
 </manifest>
