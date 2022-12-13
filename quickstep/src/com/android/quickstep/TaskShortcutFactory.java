@@ -22,7 +22,9 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIO
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 
 import android.app.Activity;
+import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
+import android.app.IActivityManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -31,10 +33,12 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.Log;
+import android.os.UserHandle;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManagerGlobal;
 import android.window.SplashScreen;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -48,6 +52,7 @@ import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -105,6 +110,43 @@ public interface TaskShortcutFactory {
             return true;
         }
     };
+
+    TaskShortcutFactory UNINSTALL = (activity, taskContainer) ->
+            PackageManagerHelper.isSystemApp(activity,
+                 taskContainer.getTask().getTopComponent().getPackageName())
+                    ? null : new SystemShortcut.UnInstall(activity,
+                        taskContainer.getItemInfo(), taskContainer.getTaskView());
+
+    abstract class MultiWindowFactory implements TaskShortcutFactory {
+
+        private final int mIconRes;
+        private final int mTextRes;
+        private final LauncherEvent mLauncherEvent;
+
+        MultiWindowFactory(int iconRes, int textRes, LauncherEvent launcherEvent) {
+            mIconRes = iconRes;
+            mTextRes = textRes;
+            mLauncherEvent = launcherEvent;
+        }
+
+        protected abstract boolean isAvailable(BaseDraggingActivity activity, int displayId);
+        protected abstract ActivityOptions makeLaunchOptions(Activity activity);
+        protected abstract boolean onActivityStarted(BaseDraggingActivity activity);
+
+        @Override
+        public SystemShortcut getShortcut(BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer) {
+            final Task task  = taskContainer.getTask();
+            if (!task.isDockable) {
+                return null;
+            }
+            if (!isAvailable(activity, task.key.displayId)) {
+                return null;
+            }
+            return new MultiWindowSystemShortcut(mIconRes, mTextRes, activity, taskContainer, this,
+                    mLauncherEvent);
+        }
+    }
 
     class SplitSelectSystemShortcut extends SystemShortcut {
         private final TaskView mTaskView;
@@ -397,4 +439,45 @@ public interface TaskShortcutFactory {
             return null;
         }
     };
+
+    TaskShortcutFactory KILL_APP = (activity, taskContainer) -> {
+        String packageName = taskContainer.getTaskView()
+                .getItemInfo().getTargetComponent().getPackageName();
+        return new KillSystemShortcut(activity, taskContainer, packageName);
+    };
+
+    class KillSystemShortcut extends SystemShortcut {
+        private static final String TAG = "KillSystemShortcut";
+        private final TaskView mTaskView;
+        private final BaseDraggingActivity mActivity;
+        private final String mPackageName;
+
+        public KillSystemShortcut(BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer, String packageName) {
+            super(R.drawable.ic_kill_app, R.string.recent_task_option_kill_app,
+                    activity, taskContainer.getItemInfo(), taskContainer.getTaskView());
+            mTaskView = taskContainer.getTaskView();
+            mActivity = activity;
+            mPackageName = packageName;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mPackageName != null) {
+                IActivityManager iam = ActivityManagerNative.getDefault();
+                Task task = mTaskView.getTask();
+                if (task != null) {
+                    try {
+                        iam.forceStopPackage(mPackageName, UserHandle.USER_CURRENT);
+                        Toast appKilled = Toast.makeText(mActivity, R.string.recents_app_killed,
+                            Toast.LENGTH_SHORT);
+                        appKilled.show();
+                        ((RecentsView)mActivity.getOverviewPanel())
+                              .dismissTask(mTaskView, true /* animate */, true /* removeTask */);
+                    } catch (RemoteException e) { }
+                }
+            }
+            dismissTaskMenuView(mActivity);
+        }
+    }
 }

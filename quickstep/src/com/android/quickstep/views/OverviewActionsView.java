@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -125,9 +126,17 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mMultiValueAlpha.setUpdateVisibility(true);
 
         findViewById(R.id.action_screenshot).setOnClickListener(this);
+        findViewById(R.id.action_clear_all).setOnClickListener(this);
 
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
+
+        if (Utilities.isGSAEnabled(getContext())) {
+            View lens = findViewById(R.id.action_lens);
+            findViewById(R.id.action_lens).setOnClickListener(this);
+            lens.setVisibility(VISIBLE);
+            findViewById(R.id.lens_space).setVisibility(VISIBLE);
+        }
     }
 
     /**
@@ -144,11 +153,15 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if (mCallbacks == null) {
             return;
         }
-        int id = view.getId();
+        final int id = view.getId();
         if (id == R.id.action_screenshot) {
             mCallbacks.onScreenshot();
         } else if (id == R.id.action_split) {
             mCallbacks.onSplit();
+        } else if (id == R.id.action_lens) {
+            mCallbacks.onLens();
+        } else if (id == R.id.action_clear_all) {
+            mCallbacks.onClearAllTasksRequested();
         }
     }
 

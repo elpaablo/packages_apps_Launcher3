@@ -41,6 +41,19 @@
 
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
+    <dimen name="dynamic_grid_hotseat_top_padding_widget">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding_widget">60dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding_widget">15dp</dimen>
+    <dimen name="dynamic_grid_hotseat_extra_vertical_size_widget">24dp</dimen>
+
+    <dimen name="qsb_g_icon_marginStart">16dp</dimen>
+    <dimen name="qsb_lens_padding">8dp</dimen>
+    <dimen name="qsb_min_width_with_mic">124dp</dimen>
+    <dimen name="qsb_shadow_margin">6dp</dimen>
+    <dimen name="qsb_widget_height">61dp</dimen>
+    <dimen name="qsb_icon_width">56dp</dimen>
+    <dimen name="qsb_icon_padding">10dp</dimen>
+
     <!-- Scalable Grid -->
     <dimen name="min_qsb_margin">8dp</dimen>
 
@@ -113,9 +126,9 @@
     <dimen name="all_apps_header_pill_corner_radius">12dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
-    <dimen name="all_apps_header_top_margin">40dp</dimen>
-    <dimen name="all_apps_header_top_padding">36dp</dimen>
-    <dimen name="all_apps_header_bottom_padding">10dp</dimen>
+    <dimen name="all_apps_header_top_margin">54dp</dimen>
+    <dimen name="all_apps_header_top_padding">30dp</dimen>
+    <dimen name="all_apps_header_bottom_padding">6dp</dimen>
     <dimen name="all_apps_header_top_adjustment">6dp</dimen>
     <dimen name="all_apps_header_bottom_adjustment">4dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
@@ -345,7 +358,7 @@
     <dimen name="snackbar_max_width">504dp</dimen>
 
     <!-- Developer Options -->
-    <dimen name="developer_options_filter_margins">10dp</dimen>
+    <dimen name="developer_options_filter_margins">20dp</dimen>
 
     <!-- Theming related -->
     <dimen name="default_dialog_corner_radius">8dp</dimen>
@@ -357,10 +370,6 @@
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
-    <dimen name="qsb_widget_height">0dp</dimen>
-    <dimen name="qsb_shadow_height">0dp</dimen>
-    <dimen name="min_hotseat_icon_space">18dp</dimen>
-    <dimen name="min_hotseat_qsb_width">0dp</dimen>
     <dimen name="taskbar_icon_size">44dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">8dp</dimen>
@@ -406,7 +415,7 @@
     <dimen name="split_instructions_bottom_margin_twopanels_portrait">51dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
-    
+
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">28dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
@@ -427,4 +436,6 @@
 
     <!-- State transition -->
     <item name="workspace_content_scale" format="float" type="dimen">0.97</item>
+
+    <dimen name="theme_icon_size">24dp</dimen>
 </resources>

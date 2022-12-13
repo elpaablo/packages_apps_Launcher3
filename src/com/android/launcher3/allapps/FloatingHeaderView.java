@@ -509,7 +509,6 @@ public class FloatingHeaderView extends LinearLayout implements
         if (mTabsHidden || mFloatingRowsCollapsed || !mHeaderCollapsed) {
             return 0;
         }
-        return Math.max(0,
-                getTabLayout().getBottom() - getPaddingTop() + getPaddingBottom() + mTranslationY);
+        return Math.max(getHeight() - getPaddingTop() + getPaddingBottom() + mTranslationY, 0);
     }
 }

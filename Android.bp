@@ -99,7 +99,7 @@ java_import {
 android_library {
     name: "Launcher3ResLib",
     srcs: [ ],
-    resource_dirs: ["res"],
+    resource_dirs: ["res", "res-themed",],
     static_libs: [
         "LauncherPluginLib",
         "launcher_quickstep_log_protos_lite",
@@ -113,6 +113,7 @@ android_library {
         "com.google.android.material_material",
         "iconloader_base",
         "libGoogleFeed",
+        "SettingsLib",
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
@@ -128,7 +129,7 @@ android_library {
 android_library {
     name: "Launcher3CommonDepsLib",
     srcs: ["src_build_config/**/*.java"],
-    static_libs: ["Launcher3ResLib", "org.lineageos.platform"],
+    static_libs: ["Launcher3ResLib"],
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
     manifest: "AndroidManifest-common.xml",
@@ -352,7 +353,10 @@ android_app {
         "Launcher3Go",
         "QuickSearchBox",
     ],
-    required: ["privapp_whitelist_com.android.launcher3"],
+    required: [
+        "privapp_whitelist_com.android.launcher3",
+        "privapp_whitelist_com.android.launcher3-ext",
+    ],
 
     additional_manifests: [
         "AndroidManifest.xml",
@@ -388,7 +392,10 @@ android_app {
         "Launcher3QuickStep",
         "QuickSearchBox",
     ],
-    required: ["privapp_whitelist_com.android.launcher3"],
+    required: [
+        "privapp_whitelist_com.android.launcher3",
+        "privapp_whitelist_com.android.launcher3-ext",
+    ],
 
     resource_dirs: ["quickstep/res"],
 
@@ -446,7 +453,10 @@ android_app {
         "Launcher3QuickStepGo",
         "QuickSearchBox",
     ],
-    required: ["privapp_whitelist_com.android.launcher3"],
+    required: [
+        "privapp_whitelist_com.android.launcher3",
+        "privapp_whitelist_com.android.launcher3-ext",
+    ],
 
     additional_manifests: [
         "go/AndroidManifest.xml",
@@ -461,3 +471,9 @@ android_app {
 
 }
 
+prebuilt_etc {
+    name: "privapp_whitelist_com.android.launcher3-ext",
+    src: "privapp_whitelist_com.android.launcher3-ext.xml",
+    system_ext_specific: true,
+    sub_dir: "permissions",
+}

@@ -166,6 +166,10 @@ public final class TaskViewUtils {
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
+        if (recentsView == null) {
+            return;
+        }
+
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
                         MODE_OPENING);
@@ -692,9 +696,11 @@ public final class TaskViewUtils {
             public void onAnimationStart(Animator animation) {
                 if (shown) {
                     for (SurfaceControl leash : auxiliarySurfaces) {
-                        t.setLayer(leash, Integer.MAX_VALUE);
-                        t.setAlpha(leash, 0);
-                        t.show(leash);
+                        if (leash != null && leash.isValid()) {
+                            t.setLayer(leash, Integer.MAX_VALUE);
+                            t.setAlpha(leash, 0);
+                            t.show(leash);
+                        }
                     }
                     t.apply();
                 }

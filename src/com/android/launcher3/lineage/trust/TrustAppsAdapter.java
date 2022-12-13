@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.lineage.trust;
 
+import android.content.Context;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
 import com.android.launcher3.lineage.trust.db.TrustComponent;
+import com.android.launcher3.lineage.LineageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,10 @@ class TrustAppsAdapter extends RecyclerView.Adapter<TrustAppsAdapter.ViewHolder>
     private List<TrustComponent> mList = new ArrayList<>();
     private Listener mListener;
     private boolean mHasSecureKeyguard;
+    private Context mContext;
 
-    TrustAppsAdapter(Listener listener, boolean hasSecureKeyguard) {
+    TrustAppsAdapter(Context context, Listener listener, boolean hasSecureKeyguard) {
+        mContext = context;
         mListener = listener;
         mHasSecureKeyguard = hasSecureKeyguard;
     }
@@ -95,10 +99,14 @@ class TrustAppsAdapter extends RecyclerView.Adapter<TrustAppsAdapter.ViewHolder>
 
             mHiddenView.setImageResource(component.isHidden() ?
                     R.drawable.ic_hidden_locked : R.drawable.ic_hidden_unlocked);
-            mProtectedView.setImageResource(component.isProtected() ?
-                    R.drawable.ic_protected_locked : R.drawable.ic_protected_unlocked);
 
-            mProtectedView.setVisibility(hasSecureKeyguard ? View.VISIBLE : View.GONE);
+            mProtectedView.setImageResource(component.isProtected() ?
+                        R.drawable.ic_locked : R.drawable.ic_unlocked);
+
+            boolean isLockable =
+                    LineageUtils.isPackageLockable(mContext, component.getPackageName());
+            mProtectedView.setVisibility(hasSecureKeyguard && isLockable ?
+                    View.VISIBLE : View.GONE);
 
             mHiddenView.setOnClickListener(v -> {
                 component.invertVisibility();

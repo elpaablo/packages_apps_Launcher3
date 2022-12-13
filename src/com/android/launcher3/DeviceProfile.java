@@ -51,8 +51,6 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
 
-import lineageos.providers.LineageSettings;
-
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
@@ -275,9 +273,7 @@ public class DeviceProfile {
         isTablet = info.isTablet(windowBounds);
         isPhone = !isTablet;
         isTwoPanels = isTablet && useTwoPanels;
-        boolean isTaskBarEnabled = LineageSettings.System.getInt(context.getContentResolver(),
-                LineageSettings.System.ENABLE_TASKBAR, isTablet ? 1 : 0) == 1;
-        isTaskbarPresent = isTaskBarEnabled && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS;
+        isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS;
 
         // Some more constants.
         context = getContext(context, info, isVerticalBarLayout() || (isTablet && isLandscape)
@@ -401,28 +397,22 @@ public class DeviceProfile {
 
         numShownAllAppsColumns =
                 isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
-
-        int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
-        int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
-        hotseatQsbSpace = pxFromDp(inv.hotseatQsbSpace[mTypeIndex], mMetrics);
-        // Have a little space between the inset and the QSB
-        if (mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
-            int availableSpace = hotseatQsbSpace - (mInsets.bottom - hotseatBarBottomSpace);
-
-            // Only change the spaces if there is space
-            if (availableSpace > 0) {
-                // Make sure there is enough space between hotseat/QSB and QSB/navBar
-                if (availableSpace < minQsbMargin * 2) {
-                    minQsbMargin = availableSpace / 2;
-                    hotseatQsbSpace = minQsbMargin;
-                } else {
-                    hotseatQsbSpace -= minQsbMargin;
-                }
-            }
-            hotseatBarBottomSpacePx = mInsets.bottom + minQsbMargin;
-
+        hotseatBarSizeExtraSpacePx = 0;
+        hotseatBarTopPaddingPx =
+                res.getDimensionPixelSize(Utilities.showQSB(context)
+                    ? R.dimen.dynamic_grid_hotseat_top_padding_widget
+                    : R.dimen.dynamic_grid_hotseat_top_padding);
+        if (isQsbInline) {
+            hotseatBarBottomPaddingPx = res.getDimensionPixelSize(R.dimen.inline_qsb_bottom_margin);
         } else {
-            hotseatBarBottomSpacePx = hotseatBarBottomSpace;
+            hotseatBarBottomPaddingPx = (isTallDevice ? res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_hotseat_bottom_tall_padding)
+                    : res.getDimensionPixelSize(Utilities.showQSB(context)
+                            ? R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding_widget
+                            : R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                    + res.getDimensionPixelSize(Utilities.showQSB(context)
+                            ? R.dimen.dynamic_grid_hotseat_bottom_padding_widget
+                            : R.dimen.dynamic_grid_hotseat_bottom_padding);
         }
 
         springLoadedHotseatBarTopMarginPx = res.getDimensionPixelSize(
@@ -431,21 +421,15 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
-        updateHotseatSizes(pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
-        if (areNavButtonsInline && !isPhone) {
-            /*
-             * 3 nav buttons +
-             * Spacing between nav buttons +
-             * Little space at the end for contextual buttons +
-             * Little space between icons and nav buttons
-             */
-            hotseatBarEndOffset = 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-                    + 2 * res.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween)
-                    + res.getDimensionPixelSize(inv.inlineNavButtonsEndSpacing)
-                    + res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing);
-        } else {
-            hotseatBarEndOffset = 0;
-        }
+        hotseatExtraVerticalSize =
+                res.getDimensionPixelSize(Utilities.showQSB(context)
+                        ? R.dimen.dynamic_grid_hotseat_extra_vertical_size_widget
+                        : R.dimen.dynamic_grid_hotseat_extra_vertical_size);
+        updateHotseatIconSize(pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
+
+        qsbBottomMarginOriginalPx = isScalableGrid
+                ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
+                : 0;
 
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
         overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
